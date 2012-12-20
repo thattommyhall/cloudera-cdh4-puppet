@@ -2,7 +2,7 @@ Install Cloudera CDH4 with puppet
 =================================
 
 Puppet modules to install hadoop, hbase, java, hive, impala, zookeeper in a production cluster.
-Inital code from robbkidd's fork of my cdh3 module [here][robkidd] 
+Inital code from robbkidd's fork of my cdh3 module [here][robbkidd] 
 [robbkidd]: https://github.com/robbkidd/cloudera-cdh4-puppet
 
 Prerequisites
