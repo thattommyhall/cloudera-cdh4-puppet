@@ -1,0 +1,6 @@
+.vagrant
+*~
+*.swp
+
+modules/java/files/deb/
+
