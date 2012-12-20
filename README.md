@@ -1,11 +1,9 @@
 Install Cloudera CDH4 with puppet
 =================================
 
-Puppet modules to install hadoop, hbase and java.
-
-This project is based on a fork of thattommyhall/cloudera-cdh3-puppet. My intention was more to have
-a little, disposable CDH4 cluster to experiment with than to test puppet installation of CDH, but
-these modules might be reusable for a bigger install. 
+Puppet modules to install hadoop, hbase, java, hive, impala, zookeeper in a production cluster.
+Inital code from robbkidd's fork of my cdh3 module [here][robkidd] 
+[robbkidd]: https://github.com/robbkidd/cloudera-cdh4-puppet
 
 Prerequisites
 =============
@@ -15,4 +13,21 @@ according to its instructions and then place the generate files found in OAB's `
 project's `modules/java/files/deb/` directory before running `vagrant up`.
 
 [oab]: https://github.com/flexiondotorg/oab-java6
+
+Copyright
+=========
+
+Copyright (c) 2012 Tom Hall. 
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
