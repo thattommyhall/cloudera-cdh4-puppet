@@ -11,14 +11,14 @@ Vagrant::Config.run do |config|
     puppet.module_path = "modules"
   end
 
-  config.vm.define :master do |master_conf|
-    master_conf.vm.host_name = "master"
-    master_conf.vm.network :hostonly, "33.33.66.100"
-    master_conf.vm.customize ["modifyvm", :id, "--memory", "2048"]
-    master_conf.vm.customize ["modifyvm", :id, "--name", "master"]
-  end
+  # config.vm.define :master do |master_conf|
+  #   master_conf.vm.host_name = "master"
+  #   master_conf.vm.network :hostonly, "33.33.66.100"
+  #   master_conf.vm.customize ["modifyvm", :id, "--memory", "1024"]
+  #   master_conf.vm.customize ["modifyvm", :id, "--name", "master"]
+  # end
 
-  (1..3).each do |i|
+  [1].each do |i|
     vmname = "slave#{i}"
     config.vm.define vmname.to_sym do |slave_conf|
       slave_conf.vm.host_name = vmname
