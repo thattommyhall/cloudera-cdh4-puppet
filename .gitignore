@@ -2,5 +2,4 @@
 *~
 *.swp
 
-modules/java/files/deb/
-
+modules/java/files/root/java/*
