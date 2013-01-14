@@ -1,3 +1,0 @@
-# Local Java see https://github.com/flexiondotorg/oab-java6
-# Place OAB generated deb/ directory in modules/java/files/deb
-deb file:///tmp/vagrant-puppet/modules-0/java/files/deb /
