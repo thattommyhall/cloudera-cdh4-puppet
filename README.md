@@ -10,7 +10,7 @@ Prerequisites
 
 You must use [OAB][oab] to produce Java packages for install. Run OAB
 according to its instructions and then place the generate files found in OAB's `deb/` directory into this
-project's `modules/java/files/deb/` directory before running `vagrant up`.
+project's `modules/java/files/root/java` directory before running `vagrant up`.
 
 [oab]: https://github.com/flexiondotorg/oab-java6
 
