@@ -37,13 +37,22 @@ class hadoop::tasktracker {
   }
 }
 
-class hadoop::namenode {
+class hadoop::secondary_namenode {
   require hadoop::base
-  package { "hadoop-hdfs-namenode":
+  package { "hadoop-hdfs-secondarynamenode":
     ensure => "latest",
     require => Package["hadoop"],
   }
-  package { "hadoop-hdfs-secondarynamenode":
+  service { "hadoop-hdfs-secondarynamenode":
+    ensure => "running",
+    require => Service["hadoop-hdfs-namenode"],
+  }
+
+}
+
+class hadoop::namenode {
+  require hadoop::base
+  package { "hadoop-hdfs-namenode":
     ensure => "latest",
     require => Package["hadoop"],
   }
@@ -51,21 +60,17 @@ class hadoop::namenode {
     ensure => directory,
     owner  => 'hdfs'
   }
-  exec { "format-name-node":
-    command => "/usr/bin/hadoop namenode -format",
-    user => "hdfs",
-    creates => "/var/hadoop/dfs/name/current",
-    require => [ Package["hadoop-hdfs-namenode"],
-                 File["/var/hadoop/dfs/name"],
-               ],
-  }
+  # exec { "format-name-node":
+  #   command => "/usr/bin/hadoop namenode -format",
+  #   user => "hdfs",
+  #   creates => "/var/hadoop/dfs/name/current",
+  #   require => [ Package["hadoop-hdfs-namenode"],
+  #                File["/var/hadoop/dfs/name"],
+  #              ],
+  # }
   service { "hadoop-hdfs-namenode":
     ensure => "running",
     require => Exec["format-name-node"],
-  }
-  service { "hadoop-hdfs-secondarynamenode":
-    ensure => "running",
-    require => Service["hadoop-hdfs-namenode"],
   }
 }
 
@@ -80,32 +85,32 @@ class hadoop::jobtracker {
     group => hadoop,
     require => Package["hadoop-0.20-mapreduce-jobtracker"],
   }
-  exec { "mapred-system-dir":
-    command => "/usr/bin/hadoop fs -mkdir /tmp/hadoop-mapred/mapred/system",
-    user => "hdfs",
-    unless => "/usr/bin/hadoop fs -ls /tmp/hadoop-mapred/mapred/system",
-    require => Service["hadoop-hdfs-namenode"],
-  }
-  exec { "mapred-staging-dir":
-    command => "/usr/bin/hadoop fs -mkdir /tmp/hadoop-mapred/mapred/staging",
-    user => "hdfs",
-    unless => "/usr/bin/hadoop fs -ls /tmp/hadoop-mapred/mapred/staging",
-    require => Service["hadoop-hdfs-namenode"],
-  }
-  exec { "mapred-temp-dir":
-    command => "/usr/bin/hadoop fs -mkdir /tmp/hadoop-mapred/mapred/temp",
-    user => "hdfs",
-    unless => "/usr/bin/hadoop fs -ls /tmp/hadoop-mapred/mapred/temp",
-    require => Service["hadoop-hdfs-namenode"],
-  }
-  exec { "mapred-owns-its-dirs":
-    command => "/usr/bin/hadoop fs -chown -R mapred:hadoop /tmp/hadoop-mapred/mapred",
-    user => "hdfs",
-    require => [ Exec["mapred-system-dir"],
-                 Exec["mapred-staging-dir"],
-                 Exec["mapred-temp-dir"],
-                ],
-  }
+  # exec { "mapred-system-dir":
+  #   command => "/usr/bin/hadoop fs -mkdir /tmp/hadoop-mapred/mapred/system",
+  #   user => "hdfs",
+  #   unless => "/usr/bin/hadoop fs -ls /tmp/hadoop-mapred/mapred/system",
+  #   require => Service["hadoop-hdfs-namenode"],
+  # }
+  # exec { "mapred-staging-dir":
+  #   command => "/usr/bin/hadoop fs -mkdir /tmp/hadoop-mapred/mapred/staging",
+  #   user => "hdfs",
+  #   unless => "/usr/bin/hadoop fs -ls /tmp/hadoop-mapred/mapred/staging",
+  #   require => Service["hadoop-hdfs-namenode"],
+  # }
+  # exec { "mapred-temp-dir":
+  #   command => "/usr/bin/hadoop fs -mkdir /tmp/hadoop-mapred/mapred/temp",
+  #   user => "hdfs",
+  #   unless => "/usr/bin/hadoop fs -ls /tmp/hadoop-mapred/mapred/temp",
+  #   require => Service["hadoop-hdfs-namenode"],
+  # }
+  # exec { "mapred-owns-its-dirs":
+  #   command => "/usr/bin/hadoop fs -chown -R mapred:hadoop /tmp/hadoop-mapred/mapred",
+  #   user => "hdfs",
+  #   require => [ Exec["mapred-system-dir"],
+  #                Exec["mapred-staging-dir"],
+  #                Exec["mapred-temp-dir"],
+  #               ],
+  # }
   service { "hadoop-0.20-mapreduce-jobtracker":
     ensure => "running",
     require => [ Package["hadoop-0.20-mapreduce-jobtracker"],
@@ -117,9 +122,9 @@ class hadoop::jobtracker {
 
 class hadoop::base {
   require hadoop::package
-  user { "vagrant":
-    groups => "hadoop",
-  }
+  # user { "vagrant":
+  #   groups => "hadoop",
+  # }
   File {
     owner => root,
     group => root,
