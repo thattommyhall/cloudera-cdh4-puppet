@@ -11,12 +11,13 @@ Vagrant::Config.run do |config|
     puppet.module_path = "modules"
   end
 
-  # config.vm.define :master do |master_conf|
-  #   master_conf.vm.host_name = "master"
-  #   master_conf.vm.network :hostonly, "33.33.66.100"
-  #   master_conf.vm.customize ["modifyvm", :id, "--memory", "1024"]
-  #   master_conf.vm.customize ["modifyvm", :id, "--name", "master"]
-  # end
+  config.vm.define :master do |master_conf|
+    master_conf.vm.host_name = "master"
+    master_conf.vm.network :hostonly, "33.33.66.100"
+    master_conf.vm.customize ["modifyvm", :id, "--memory", "1024"]
+    master_conf.vm.customize ["modifyvm", :id, "--name", "master"]
+  end
+
 
   [1].each do |i|
     vmname = "slave#{i}"
@@ -27,4 +28,12 @@ Vagrant::Config.run do |config|
       slave_conf.vm.customize ["modifyvm", :id, "--name", vmname]
     end
   end
+
+  # config.vm.define :hiveserver do |conf|
+  #   conf.vm.host_name = "hiveserver"
+  #   conf.vm.network :hostonly, "33.33.66.120"
+  #   conf.vm.customize ["modifyvm", :id, "--memory", "1024"]
+  #   conf.vm.customize ["modifyvm", :id, "--name", "hiveserver"]
+  # end
+
 end
