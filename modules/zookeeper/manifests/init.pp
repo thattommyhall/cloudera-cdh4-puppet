@@ -1,25 +1,43 @@
-class cdh4::zookeeper::config(
-	$data_dir          = "/var/lib/zookeeper",
-	$zookeeper_hosts   = undef,
-	$jmxremote_port   = 9998)
-{
+class zookeeper::server {
+  require hadoop::apt,java
+  package { "zookeeper-server": ensure => installed }
+  
+  $data_dir          = "/var/lib/zookeeper"
+	$zookeeper_hosts   =  {
+		"zookeeper1" => 1,
+		"zookeeper2" => 2,
+		"zookeeper3" => 3
+	}
+	$jmxremote_port   = false
+  
 	file { "/etc/zookeeper/conf/zoo.cfg":
-		content => template("cdh4/zookeeper/zoo.cfg.erb"),
+		content => template("zookeeper/zoo.cfg.erb"),
 		require => Package["zookeeper-server"],
 	}
 
-	# If jmxremote_port is false, zookeeper-env.sh
-	# won't have any content.  Might as well not render it.
 	file { "/etc/zookeeper/conf/zookeeper-env.sh":
-		content => template("cdh4/zookeeper/zookeeper-env.sh.erb"),
+		content => template("zookeeper/zookeeper-env.sh.erb"),
 		require => Package["zookeeper-server"],
-		ensure  => $jmxremote_port ? {
-			false   => "absent",
-			default => "present"
-		}
 	}
+
+	$myid = inline_template("<%= @zookeeper_hosts[hostname] %>")
+
+	exec { "zookeeper-server-initialize":
+		command => "/usr/bin/zookeeper-server-initialize --myid=${myid}",
+		unless  => "/usr/bin/test -f $zookeeper::server::data_dir/myid",
+		user    => "zookeeper",
+		require => [File["/etc/zookeeper/conf/zoo.cfg"],File["/etc/zookeeper/conf/zookeeper-env.sh"]]
+	}
+
 }
 
-class cdh4::zookeeper::install {
-  package { "zookeeper-server": ensure => installed }
+class zookeeper::service {
+	service { "zookeeper-server":
+		ensure     => running,
+		require    => Package["zookeeper-server"],
+		hasrestart => true,
+		hasstatus  => true,
+		subscribe  => Class["zookeeper::server"],
+    require => Exec["zookeeper-server-initialize"],
+	}
 }
