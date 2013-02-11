@@ -13,3 +13,7 @@ node master {
 node hiveserver {
   include hive::server
 }
+
+node /zookeeper\d+/ {
+  include zookeeper::server
+}
