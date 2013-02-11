@@ -23,7 +23,7 @@ class java {
   }
   
   package { "sun-java6-jdk":
-    ensure  => "present",
+    ensure  => "latest",
   }
 
   file { "/root/java":

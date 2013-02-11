@@ -4,17 +4,9 @@ class hadoop::datanode {
   package { "hadoop-hdfs-datanode":
     ensure => "latest",
   }
-  file { ["/data0/hdfs", "/data0/hdfs/data"]:
-    ensure => directory,
-    owner => hdfs,
-    group => hadoop,
-    require => Package["hadoop-hdfs-datanode"],
-  }
   service { "hadoop-hdfs-datanode":
     ensure => "running",
-    require => [ Package["hadoop-hdfs-datanode"],
-                 File["/data0/hdfs/data"],
-               ],
+    require => Package["hadoop-hdfs-datanode"],
   }
 }
 
@@ -23,17 +15,9 @@ class hadoop::tasktracker {
   package { "hadoop-0.20-mapreduce-tasktracker":
     ensure => "latest",
   }
-  file { ["/data0/mapred", "/data0/mapred/local"]:
-    ensure => directory,
-    owner => mapred,
-    group => hadoop,
-    require => Package["hadoop-0.20-mapreduce-tasktracker"],
-  }
   service { "hadoop-0.20-mapreduce-tasktracker":
     ensure => "running",
-    require => [ Package["hadoop-0.20-mapreduce-tasktracker"],
-                 File["/data0/mapred/local"],
-               ],
+    require => Package["hadoop-0.20-mapreduce-tasktracker"],
   }
 }
 
@@ -47,7 +31,6 @@ class hadoop::secondary_namenode {
     ensure => "running",
     require => Service["hadoop-hdfs-namenode"],
   }
-
 }
 
 class hadoop::namenode {
@@ -60,17 +43,8 @@ class hadoop::namenode {
     ensure => directory,
     owner  => 'hdfs'
   }
-  # exec { "format-name-node":
-  #   command => "/usr/bin/hadoop namenode -format",
-  #   user => "hdfs",
-  #   creates => "/var/hadoop/dfs/name/current",
-  #   require => [ Package["hadoop-hdfs-namenode"],
-  #                File["/var/hadoop/dfs/name"],
-  #              ],
-  # }
   service { "hadoop-hdfs-namenode":
     ensure => "running",
-    require => Exec["format-name-node"],
   }
 }
 
@@ -79,52 +53,14 @@ class hadoop::jobtracker {
   package { "hadoop-0.20-mapreduce-jobtracker":
     ensure => "latest",
   }
-  file { ["/data0/mapred", "/data0/mapred/local"]:
-    ensure => directory,
-    owner => mapred,
-    group => hadoop,
-    require => Package["hadoop-0.20-mapreduce-jobtracker"],
-  }
-  # exec { "mapred-system-dir":
-  #   command => "/usr/bin/hadoop fs -mkdir /tmp/hadoop-mapred/mapred/system",
-  #   user => "hdfs",
-  #   unless => "/usr/bin/hadoop fs -ls /tmp/hadoop-mapred/mapred/system",
-  #   require => Service["hadoop-hdfs-namenode"],
-  # }
-  # exec { "mapred-staging-dir":
-  #   command => "/usr/bin/hadoop fs -mkdir /tmp/hadoop-mapred/mapred/staging",
-  #   user => "hdfs",
-  #   unless => "/usr/bin/hadoop fs -ls /tmp/hadoop-mapred/mapred/staging",
-  #   require => Service["hadoop-hdfs-namenode"],
-  # }
-  # exec { "mapred-temp-dir":
-  #   command => "/usr/bin/hadoop fs -mkdir /tmp/hadoop-mapred/mapred/temp",
-  #   user => "hdfs",
-  #   unless => "/usr/bin/hadoop fs -ls /tmp/hadoop-mapred/mapred/temp",
-  #   require => Service["hadoop-hdfs-namenode"],
-  # }
-  # exec { "mapred-owns-its-dirs":
-  #   command => "/usr/bin/hadoop fs -chown -R mapred:hadoop /tmp/hadoop-mapred/mapred",
-  #   user => "hdfs",
-  #   require => [ Exec["mapred-system-dir"],
-  #                Exec["mapred-staging-dir"],
-  #                Exec["mapred-temp-dir"],
-  #               ],
-  # }
   service { "hadoop-0.20-mapreduce-jobtracker":
     ensure => "running",
-    require => [ Package["hadoop-0.20-mapreduce-jobtracker"],
-                 Exec["mapred-owns-its-dirs"],
-                 File["/data0/mapred/local"],
-               ],
+    require => Package["hadoop-0.20-mapreduce-jobtracker"],
   }
 }
 
 class hadoop::base {
   require hadoop::package
-  # user { "vagrant":
-  #   groups => "hadoop",
-  # }
   File {
     owner => root,
     group => root,
