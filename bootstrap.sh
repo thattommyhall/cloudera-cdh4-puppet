@@ -8,6 +8,8 @@ echo '33.33.66.100 master' >> /etc/hosts
 echo '33.33.66.101 slave1' >> /etc/hosts
 echo '33.33.66.102 slave2' >> /etc/hosts
 echo '33.33.66.103 slave3' >> /etc/hosts
-
+echo '33.33.66.111 zookeeper1' >> /etc/hosts
+echo '33.33.66.112 zookeeper2' >> /etc/hosts
+echo '33.33.66.113 zookeeper3' >> /etc/hosts
 mkdir -p /data0/mapred/local
 mkdir -p /data0/hdfs/data/
