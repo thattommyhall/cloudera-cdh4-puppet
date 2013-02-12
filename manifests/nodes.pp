@@ -15,5 +15,5 @@ node hiveserver {
 }
 
 node /zookeeper\d+/ {
-  include zookeeper::server
+  include zookeeper::node
 }
