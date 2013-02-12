@@ -35,9 +35,11 @@ hbase - nofile  65536
   }
   file { "/etc/hbase/conf":
     ensure => directory,
+    owner => 'hbase',
     source => 'puppet:///modules/hbase/etc/hbase/conf',
     recurse => true
   }
+  
   package { "hadoop-hbase":
     ensure => 'latest',
   }
