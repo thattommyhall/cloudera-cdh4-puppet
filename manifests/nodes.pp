@@ -1,19 +1,40 @@
-node /slave\d+/ {
+node default {
+  package { "curl":
+    ensure => "latest",
+  }
+}
+
+node /slave\d+/ inherits default {
+  require java
+  include vagrant::hadoop
   include hadoop::datanode
   include hadoop::tasktracker
-  include hbase::regionserver
+  # include hbase::regionserver
 }
 
-node master {
+node master inherits default {
+  require java
+  include vagrant::hadoop
   include hadoop::namenode
   include hadoop::jobtracker
-  include hbase::master
+  # include hbase::master
 }
 
-node hiveserver {
+node hiveserver inherits default {
+  require java
+  include vagrant::hadoop
   include hive::server
 }
 
-node /zookeeper\d+/ {
-  include zookeeper::node
+node /zookeeper\d+/ inherits default {
+  require java
+  include vagrant::hadoop::apt
+  class { "cdh4::zookeeper::server":
+    zookeeper_hosts => {
+      "zookeeper1.vagrant" => 1,
+      "zookeeper2.vagrant" => 2,
+      "zookeeper3.vagrant" => 3,
+    }
+  }
 }
+

@@ -36,8 +36,8 @@ Vagrant::Config.run do |config|
   #   conf.vm.customize ["modifyvm", :id, "--name", "hiveserver"]
   # end
 
-  [1,2,3].each do |i|
-    vmname = "zookeeper#{i}"
+  [1].each do |i|
+    vmname = "zookeeper#{i}.vagrant"
     config.vm.define vmname.to_sym do |slave_conf|
       slave_conf.vm.host_name = vmname
       slave_conf.vm.network :hostonly, "33.33.66.#{i+110}"
