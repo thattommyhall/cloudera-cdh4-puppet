@@ -6,9 +6,9 @@ node default {
 
 node /slave\d+/ inherits default {
   require java
-  include vagrant::hadoop
-  include hadoop::datanode
-  include hadoop::tasktracker
+  include vagrant::hadoop::base
+  include cdh4::hadoop::datanode
+  include cdh4::hadoop::tasktracker
   # include hbase::regionserver
 }
 

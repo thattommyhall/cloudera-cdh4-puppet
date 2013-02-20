@@ -1,4 +1,5 @@
 class cdh4::hadoop::datanode {
+  Class["cdh4::hadoop::base"] -> Class["cdh4::hadoop::datanode"]
   package { "hadoop-hdfs-datanode":
     ensure => "latest",
   }
@@ -9,6 +10,7 @@ class cdh4::hadoop::datanode {
 }
 
 class cdh4::hadoop::tasktracker {
+  Class["cdh4::hadoop::base"] -> Class["cdh4::hadoop::tasktracker"]
   package { "hadoop-0.20-mapreduce-tasktracker":
     ensure => "latest",
   }
@@ -19,6 +21,7 @@ class cdh4::hadoop::tasktracker {
 }
 
 class cdh4::hadoop::secondary_namenode {
+  Class["cdh4::hadoop::base"] -> Class["cdh4::hadoop::secondary_namenode"]
   package { "hadoop-hdfs-secondarynamenode":
     ensure => "latest",
     require => Package["hadoop"],
@@ -30,6 +33,7 @@ class cdh4::hadoop::secondary_namenode {
 }
 
 class cdh4::hadoop::namenode {
+  Class["cdh4::hadoop::base"] -> Class["cdh4::hadoop::namenode"]
   package { "hadoop-hdfs-namenode":
     ensure => "latest",
     require => Package["hadoop"],
@@ -44,6 +48,7 @@ class cdh4::hadoop::namenode {
 }
 
 class cdh4::hadoop::jobtracker {
+  Class["cdh4::hadoop::base"] -> Class["cdh4::hadoop::jobtracker"]
   package { "hadoop-0.20-mapreduce-jobtracker":
     ensure => "latest",
   }
@@ -53,8 +58,8 @@ class cdh4::hadoop::jobtracker {
   }
 }
 
-class cdh4::hadoop::config {
-  Class["cdh4::hadoop::apt"] -> Class["cdh4::hadoop::config"]
+class cdh4::hadoop::base {
+  Class["cdh4::hadoop::apt"] -> Class["cdh4::hadoop::base"]
   File {
     owner => root,
     group => root,
@@ -68,11 +73,11 @@ class cdh4::hadoop::config {
   #   ensure => "file",
   #   mode => "0744",
   # }
-  # file { "/etc/hadoop/conf.cluster/":
-  #   ensure  => directory,
-  #   source  => 'puppet:///modules/cdh4/hadoop/etc/hadoop/conf.cluster/',
-  #   recurse => true,
-  # }
+  file { "/etc/hadoop/conf.current/":
+    ensure  => directory,
+    source  => 'puppet:///modules/cdh4/hadoop/etc/hadoop/conf.current/',
+    recurse => true,
+  }
   # file { "hdfs-site":
   #   path    => "/etc/hadoop/conf.cluster/hdfs-site.xml",
   #   ensure  => file,
@@ -87,10 +92,10 @@ class cdh4::hadoop::config {
   #   ensure  => file,
   #   content => "kernel.panic = 10",
   # }
-  # exec { "update_hadoop_alternative_conf":
-  #   command => "/usr/sbin/update-alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.cluster 99",
-  #   require => File["/etc/hadoop/conf.cluster"],
-  # }
+  exec { "update_hadoop_alternative_conf":
+    command => "/usr/sbin/update-alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.current 99",
+    require => File["/etc/hadoop/conf.current"],
+  }
 }
 
 class cdh4::hadoop::apt(

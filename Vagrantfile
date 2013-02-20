@@ -19,15 +19,15 @@ Vagrant::Config.run do |config|
   # end
 
 
-  # [1].each do |i|
-  #   vmname = "slave#{i}"
-  #   config.vm.define vmname.to_sym do |slave_conf|
-  #     slave_conf.vm.host_name = vmname
-  #     slave_conf.vm.network :hostonly, "33.33.66.#{i+100}"
-  #     slave_conf.vm.customize ["modifyvm", :id, "--memory", "512"]
-  #     slave_conf.vm.customize ["modifyvm", :id, "--name", vmname]
-  #   end
-  # end
+  [1].each do |i|
+    vmname = "slave#{i}"
+    config.vm.define vmname.to_sym do |slave_conf|
+      slave_conf.vm.host_name = vmname
+      slave_conf.vm.network :hostonly, "33.33.66.#{i+100}"
+      slave_conf.vm.customize ["modifyvm", :id, "--memory", "512"]
+      slave_conf.vm.customize ["modifyvm", :id, "--name", vmname]
+    end
+  end
 
   # config.vm.define :hiveserver do |conf|
   #   conf.vm.host_name = "hiveserver"
@@ -36,13 +36,13 @@ Vagrant::Config.run do |config|
   #   conf.vm.customize ["modifyvm", :id, "--name", "hiveserver"]
   # end
 
-  [1].each do |i|
-    vmname = "zookeeper#{i}.vagrant"
-    config.vm.define vmname.to_sym do |slave_conf|
-      slave_conf.vm.host_name = vmname
-      slave_conf.vm.network :hostonly, "33.33.66.#{i+110}"
-      slave_conf.vm.customize ["modifyvm", :id, "--memory", "256"]
-      slave_conf.vm.customize ["modifyvm", :id, "--name", vmname]
-    end
-  end
+  # [1].each do |i|
+  #   vmname = "zookeeper#{i}.vagrant"
+  #   config.vm.define vmname.to_sym do |slave_conf|
+  #     slave_conf.vm.host_name = vmname
+  #     slave_conf.vm.network :hostonly, "33.33.66.#{i+110}"
+  #     slave_conf.vm.customize ["modifyvm", :id, "--memory", "256"]
+  #     slave_conf.vm.customize ["modifyvm", :id, "--name", vmname]
+  #   end
+  # end
 end
