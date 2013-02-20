@@ -2,4 +2,12 @@
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
 
 <configuration>
+<%- core_settings.keys.sort.each do |name| -%>
+<%= %Q[
+  <property>
+    <name>#{name}</name>
+    <value>#{core_settings[value]}</value>
+  </property>] %>
+<%- end -%>
+
 </configuration>

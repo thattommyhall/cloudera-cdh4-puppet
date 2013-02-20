@@ -1,5 +1,5 @@
 node default {
-  package { "curl":
+  package { ["curl","screen"]:
     ensure => "latest",
   }
 }
@@ -14,9 +14,9 @@ node /slave\d+/ inherits default {
 
 node master inherits default {
   require java
-  include vagrant::hadoop
-  include hadoop::namenode
-  include hadoop::jobtracker
+  include vagrant::hadoop::base
+  include cdh4::hadoop::namenode
+  include cdh4::hadoop::jobtracker
   # include hbase::master
 }
 

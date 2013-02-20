@@ -14,10 +14,10 @@ class cdh4::hadoop::tasktracker {
   package { "hadoop-0.20-mapreduce-tasktracker":
     ensure => "latest",
   }
-  service { "hadoop-0.20-mapreduce-tasktracker":
-    ensure => "running",
-    require => Package["hadoop-0.20-mapreduce-tasktracker"],
-  }
+  # service { "hadoop-0.20-mapreduce-tasktracker":
+  #   ensure => "running",
+  #   require => Package["hadoop-0.20-mapreduce-tasktracker"],
+  # }
 }
 
 class cdh4::hadoop::secondary_namenode {
@@ -58,7 +58,12 @@ class cdh4::hadoop::jobtracker {
   }
 }
 
-class cdh4::hadoop::base {
+class cdh4::hadoop::base(
+  $config_dir = "/etc/hadoop/conf.current",
+  $hdfs_settings,
+  $mapred_settings,
+  $core_settings,
+  ) {
   Class["cdh4::hadoop::apt"] -> Class["cdh4::hadoop::base"]
   File {
     owner => root,
@@ -68,39 +73,41 @@ class cdh4::hadoop::base {
   package { "hadoop":
     ensure => latest,
   }
-  # file { "/etc/hosts":
-  #   source => "puppet:///modules/cdh4/hadoop/etc/hosts",
-  #   ensure => "file",
-  #   mode => "0744",
-  # }
-  file { "/etc/hadoop/conf.current/":
+  file { $config_dir:
     ensure  => directory,
-    source  => 'puppet:///modules/cdh4/hadoop/etc/hadoop/conf.current/',
+    source  => 'puppet:///modules/cdh4/hadoop/etc/hadoop/conf/',
     recurse => true,
+    require => Package["hadoop"],
   }
-  # file { "hdfs-site":
-  #   path    => "/etc/hadoop/conf.cluster/hdfs-site.xml",
-  #   ensure  => file,
-  #   content => template("hadoop/hdfs-site.xml.erb"),
-  # }
-  # file { "mapred-site":
-  #   path    => "/etc/hadoop/conf.cluster/mapred-site.xml",
-  #   ensure  => file,
-  #   content => template("hadoop/mapred-site.xml.erb"),
-  # }
+  file { "hdfs-site":
+    path    => "${config_dir}/hdfs-site.xml",
+    ensure  => file,
+    content => template("cdh4/hadoop/hdfs-site.xml.erb"),
+  }
+  file { "mapred-site":
+    path    => "${config_dir}/mapred-site.xml",
+    ensure  => file,
+    content => template("cdh4/hadoop/mapred-site.xml.erb"),
+  }
+  file { "core-site":
+    path    => "${config_dir}/core-site.xml",
+    ensure  => file,
+    content => template("cdh4/hadoop/core-site.xml.erb"),
+  }
   # file { "/etc/sysctl.d/60-reboot":
   #   ensure  => file,
   #   content => "kernel.panic = 10",
   # }
   exec { "update_hadoop_alternative_conf":
-    command => "/usr/sbin/update-alternatives --install /etc/hadoop/conf hadoop-conf /etc/hadoop/conf.current 99",
-    require => File["/etc/hadoop/conf.current"],
+    command => "/usr/sbin/update-alternatives --install /etc/hadoop/conf hadoop-conf ${config_dir} 99",
+    require => File[$config_dir],
+    unless => "/usr/sbin/update-alternatives --display hadoop-conf | /bin/grep currently | /bin/grep ${config_dir}"
   }
 }
 
 class cdh4::hadoop::apt(
   # see http://archive.cloudera.com/cdh4/ubuntu/precise/amd64/cdh/dists/
-  # for what versions exist
+  # for what versions exist, defaults to 4 (which will have packages in that change version so ensure => latest may cause issues elsewhere)
   $version = '4'
   ) {
   $operatingsystem_lowercase = inline_template("<%= operatingsystem.downcase %>")

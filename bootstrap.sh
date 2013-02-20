@@ -11,5 +11,6 @@ echo '33.33.66.103 slave3.vagrant' >> /etc/hosts
 echo '33.33.66.111 zookeeper1.vagrant' >> /etc/hosts
 echo '33.33.66.112 zookeeper2.vagrant' >> /etc/hosts
 echo '33.33.66.113 zookeeper3.vagrant' >> /etc/hosts
-mkdir -p /data0/mapred/local
-mkdir -p /data0/hdfs/data/
+mkdir -p /tmp/hadoop-name-dir
+mkdir -p /tmp/hadoop-data-dir
+mkdir -p /tmp/hadoop-mapred-dir
