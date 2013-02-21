@@ -14,10 +14,10 @@ class cdh4::hadoop::tasktracker {
   package { "hadoop-0.20-mapreduce-tasktracker":
     ensure => "latest",
   }
-  # service { "hadoop-0.20-mapreduce-tasktracker":
-  #   ensure => "running",
-  #   require => Package["hadoop-0.20-mapreduce-tasktracker"],
-  # }
+  service { "hadoop-0.20-mapreduce-tasktracker":
+    ensure => "running",
+    require => Package["hadoop-0.20-mapreduce-tasktracker"],
+  }
 }
 
 class cdh4::hadoop::secondary_namenode {

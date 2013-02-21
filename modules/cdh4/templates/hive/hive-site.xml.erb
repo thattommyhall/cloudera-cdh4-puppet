@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+
+<%- hive_defaults.merge(hive_settings).keys.sort.each do |name| -%>
+<%= %Q[
+  <property>
+    <name>#{name}</name>
+    <value>#{core_settings[value]}</value>
+  </property>] %>
+<%- end -%>
+
+</configuration>
