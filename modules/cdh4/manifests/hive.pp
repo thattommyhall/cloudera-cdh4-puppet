@@ -3,6 +3,13 @@ class cdh4::hive::server {
   package { "hive-server": }
 }
 
+class cdh4::hive::server_service {
+  Class["cdh4::hive::server"] -> Class["cdh4::hive::server_service"]
+  service { "hive-server":
+    ensure => "running",
+  }
+}
+
 class cdh4::hive::server2 {
   Class["cdh4::hive::base"] -> Class["cdh4::hive::server2"]
   package { "hive-server2": }
@@ -28,11 +35,6 @@ class cdh4::hive::base(
     path    => "${config_dir}/hive-site.xml",
     ensure  => file,
     content => template("cdh4/hive/hive-site.xml.erb"),
-  }
-  file { "hive-default":
-    path    => "${config_dir}/hive-default.xml",
-    ensure  => file,
-    content => template("cdh4/hive/hive-default.xml.erb"),
   }
   exec { "update_hadoop_alternative_conf":
     command => "/usr/sbin/update-alternatives --install /etc/hive/conf hive-conf ${config_dir} 99",

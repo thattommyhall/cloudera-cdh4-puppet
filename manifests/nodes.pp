@@ -24,7 +24,8 @@ node hiveserver inherits default {
   require java
   include vagrant::hadoop::apt
   class { 'cdh4::hive::base': }
-  include cdh4::hive::server
+  class { 'cdh4::hive::server': }
+  class { 'cdh4::hive::server_service': }
 }
 
 node /zookeeper\d+/ inherits default {

@@ -3,11 +3,12 @@
 
 <configuration>
 
-<%- hive_defaults.merge(hive_settings).keys.sort.each do |name| -%>
+<%- settings = hive_defaults.merge(hive_settings) -%>
+<%- settings.keys.sort.each do |name| -%>
 <%= %Q[
   <property>
     <name>#{name}</name>
-    <value>#{core_settings[value]}</value>
+    <value>#{settings[name]}</value>
   </property>] %>
 <%- end -%>
 
